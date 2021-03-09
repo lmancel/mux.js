@@ -1,9 +1,12 @@
 {
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "es6": true
   },
-
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
   "globals": {
     "document": false,
     "escape": false,
@@ -28,7 +31,7 @@
     "block-scoped-var": 0,
     "brace-style": [2, "1tbs", {"allowSingleLine": false}],
     "camelcase": [2, {"properties": "always"}],
-    "comma-dangle": [2, "never"],
+    "comma-dangle": [2, "always-multiline"],
     "comma-spacing": [2, {"before": false, "after": true}],
     "comma-style": [2, "last"],
     "complexity": 0,
@@ -90,7 +93,6 @@
     "no-irregular-whitespace": 2,
     "no-iterator": 2,
     "no-label-var": 2,
-    "no-labels": 2,
     "no-lone-blocks": 2,
     "no-lonely-if": 2,
     "no-loop-func": 1,
@@ -148,7 +150,7 @@
     "quote-props": [2, "as-needed"],
     "quotes": [2, "single", "avoid-escape"],
     "radix": 2,
-    "semi": [2, "always"],
+    "semi": [2, "never"],
     "semi-spacing": [2, {"before": false, "after": true}],
     "sort-vars": 0,
     "space-before-blocks": [2, "always"],
@@ -162,7 +164,7 @@
     "use-isnan": 2,
     "valid-jsdoc": 0,
     "valid-typeof": 2,
-    "vars-on-top": 1,
+    "vars-on-top": "off",
     "wrap-iife": [2, "outside"],
     "wrap-regex": 2,
     "yoda": [2, "never", {"exceptRange": true}]
