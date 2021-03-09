@@ -1,10 +1,10 @@
 {
-  "name": "mux.js",
+  "name": "@taktik/mux.js",
   "version": "5.10.0",
   "description": "A collection of lightweight utilities for inspecting and manipulating video container formats.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/videojs/mux.js.git"
+    "url": "https://github.com/lmancel/mux.js.git"
   },
   "main": "./cjs/index.js",
   "module": "es/index.js",
@@ -96,6 +96,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.taktik.be/repository/npm/"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
