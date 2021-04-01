@@ -6,8 +6,8 @@
     "type": "git",
     "url": "https://github.com/lmancel/mux.js.git"
   },
-  "main": "./cjs/index.js",
-  "module": "es/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/mux.js.d.ts",
   "browser": "dist/mux.js",
   "bin": {
     "muxjs-transmux": "bin/transmux.js"
@@ -95,7 +95,8 @@
     "README.md": "doctoc --notitle"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2"
+    "@babel/runtime": "^7.11.2",
+    "@taktik/mpegts-tools": "0.0.7"
   },
   "publishConfig": {
     "registry": "https://npm.taktik.be/repository/npm/"
