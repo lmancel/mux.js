@@ -9,23 +9,43 @@ Maintenance Status: Stable
 
 ## Table of Contents
 
-- [Installation](#installation)
-  - [NPM](#npm)
-  - [Manual Build](#manual-build)
-- [Building](#building)
-- [Collaborator](#collaborator)
-- [Contributing](#contributing)
-- [Options](#options)
-- [Background](#background)
-  - [fmp4](#fmp4)
-- [MPEG2-TS to fMP4 Transmuxer](#mpeg2-ts-to-fmp4-transmuxer)
-  - [Diagram](#diagram)
-- [Usage Examples](#usage-examples)
-  - [Basic Usage](#basic-usage)
-  - [Metadata](#metadata)
-  - [MP4 Inspector](#mp4-inspector)
-- [Documentation](#documentation)
-- [Talk to Us](#talk-to-us)
+- [mux.js](#muxjs)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+    - [NPM](#npm)
+    - [Manual Build](#manual-build)
+  - [Building](#building)
+  - [Collaborator](#collaborator)
+  - [Contributing](#contributing)
+  - [Options](#options)
+    - [Codecs](#codecs)
+      - [Adts](#adts)
+      - [h264](#h264)
+    - [mp4](#mp4)
+      - [MP4 Generator](#mp4-generator)
+      - [MP4 Probe](#mp4-probe)
+      - [MP4 Transmuxer](#mp4-transmuxer)
+        - [baseMediaDecodeTime](#basemediadecodetime)
+        - [keepOriginalTimestamps](#keeporiginaltimestamps)
+        - [remux](#remux)
+      - [CaptionParser](#captionparser)
+      - [Tools](#tools)
+    - [flv](#flv)
+      - [Transmuxer](#transmuxer)
+      - [Tools](#tools-1)
+    - [mp2t](#mp2t)
+      - [CaptionStream](#captionstream)
+      - [Tools](#tools-2)
+  - [Background](#background)
+    - [fMP4](#fmp4)
+  - [MPEG2-TS to fMP4 Transmuxer](#mpeg2-ts-to-fmp4-transmuxer)
+    - [Diagram](#diagram)
+  - [Usage Examples](#usage-examples)
+    - [Basic Usage](#basic-usage)
+    - [Metadata](#metadata)
+    - [MP4 Inspector](#mp4-inspector)
+  - [Documentation](#documentation)
+  - [Talk to us](#talk-to-us)
 
 ## Installation
 ### NPM
@@ -193,7 +213,7 @@ If you would like to see a clearer representation of your fMP4 you can use the `
 
 To make use of the Transmuxer method you will need to push data to the transmuxer you have created.
 
-Feed in `Uint8Array`s of an MPEG-2 transport stream, get out a fragmented MP4.
+Feed in `Buffer`s of an MPEG-2 transport stream, get out a fragmented MP4.
 
 Lets look at a very basic representation of what needs to happen the first time you want to append a fMP4 to an MSE buffer.
 
@@ -206,8 +226,8 @@ var transmuxer = new muxjs.mp4.Transmuxer(initOptions);
 //  'data' events signal a new fMP4 segment is ready
 transmuxer.on('data', function (segment) {
   // This code will be executed when the event listener is triggered by a Transmuxer.push() method execution.
-  // Create an empty Uint8Array with the summed value of both the initSegment and data byteLength properties.
-  let data = new Uint8Array(segment.initSegment.byteLength + segment.data.byteLength);
+  // Create an empty Buffer with the summed value of both the initSegment and data byteLength properties.
+  let data = new Buffer(segment.initSegment.byteLength + segment.data.byteLength);
 
   // Add the segment.initSegment (ftyp/moov) starting at position 0
   data.set(segment.initSegment, 0);
@@ -236,7 +256,7 @@ In the case of appending additional segments after your first segment we will ju
 
 ```js
 transmuxer.on('data', function(segment){
-  sourceBuffer.appendBuffer(new Uint8Array(segment.data));
+  sourceBuffer.appendBuffer(new Buffer(segment.data));
 });
 ```
 
@@ -278,7 +298,7 @@ Here we put all of this together in a very basic example player.
         sourceBuffer.addEventListener('updateend', appendNextSegment);
 
         transmuxer.on('data', (segment) => {
-          let data = new Uint8Array(segment.initSegment.byteLength + segment.data.byteLength);
+          let data = new Buffer(segment.initSegment.byteLength + segment.data.byteLength);
           data.set(segment.initSegment, 0);
           data.set(segment.data, segment.initSegment.byteLength);
           console.log(muxjs.mp4.tools.inspect(data));
@@ -288,7 +308,7 @@ Here we put all of this together in a very basic example player.
         fetch(segments.shift()).then((response)=>{
           return response.arrayBuffer();
         }).then((response)=>{
-          transmuxer.push(new Uint8Array(response));
+          transmuxer.push(new Buffer(response));
           transmuxer.flush();
         })
       }
@@ -297,7 +317,7 @@ Here we put all of this together in a very basic example player.
         // reset the 'data' event listener to just append (moof/mdat) boxes to the Source Buffer
         transmuxer.off('data');
         transmuxer.on('data', (segment) =>{
-          sourceBuffer.appendBuffer(new Uint8Array(segment.data));
+          sourceBuffer.appendBuffer(new Buffer(segment.data));
         })
 
         if (segments.length == 0){
@@ -310,7 +330,7 @@ Here we put all of this together in a very basic example player.
           fetch(segments.shift()).then((response)=>{
             return response.arrayBuffer();
           }).then((response)=>{
-            transmuxer.push(new Uint8Array(response));
+            transmuxer.push(new Buffer(response));
             transmuxer.flush();
           })
         })
@@ -344,7 +364,7 @@ transmuxer.on('data', function (segment) {
 Parse MP4s into javascript objects or a text representation for display or debugging:
 
 ```js
-// drop in a Uint8Array of an MP4:
+// drop in a Buffer of an MP4:
 var parsed = muxjs.mp4.tools.inspect(bytes);
 // dig into the boxes:
 console.log('The major brand of the first box:', parsed[0].majorBrand);
