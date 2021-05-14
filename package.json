@@ -96,7 +96,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@taktik/mpegts-tools": "0.0.7"
+    "@taktik/mpegts-tools": "0.0.8"
   },
   "publishConfig": {
     "registry": "https://npm.taktik.be/repository/npm/"
