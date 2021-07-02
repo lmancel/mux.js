@@ -75,7 +75,7 @@ declare module '@taktik/mux.js' {
     canFlush(): boolean
   }
   export class TrackInfoStream extends Transform {
-    constructor()
+    constructor(broadStreamDetection: boolean = false)
   }
 
   export const mp4: { Transmuxer: typeof Transmuxer, tools: ITools, probe: { tracks: (initSegment: Buffer) => ITrack[] } }
